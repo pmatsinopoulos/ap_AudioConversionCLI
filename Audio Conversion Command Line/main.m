@@ -21,15 +21,26 @@ void GetInputAudioFormatAndPacketsInfo (AudioConverterSettings *audioConverterSe
                                   &audioConverterSettings->inputFormat),
              "Getting the Audio Stream Basic Description of the input audio file");
   
-  propertyValueSize = sizeof(audioConverterSettings->inputFilePacketCount);
+  UInt32 isWriteable = 0;
+  CheckError(AudioFileGetPropertyInfo(audioConverterSettings->inputFile,
+                                      kAudioFilePropertyAudioDataPacketCount,
+                                      &propertyValueSize,
+                                      &isWriteable),
+             "Getting the input file total number of packets property value size");
+  
   CheckError(AudioFileGetProperty(audioConverterSettings->inputFile,
                                   kAudioFilePropertyAudioDataPacketCount,
                                   &propertyValueSize,
                                   &audioConverterSettings->inputFilePacketCount),
              "Getting the input file total number of packets");
   NSPrint(@"Number of input file audio data packet count %d\n", audioConverterSettings->inputFilePacketCount);
-  
-  propertyValueSize = sizeof(audioConverterSettings->inputFilePacketMaxSize);
+
+  CheckError(AudioFileGetPropertyInfo(audioConverterSettings->inputFile,
+                                      kAudioFilePropertyMaximumPacketSize,
+                                      &propertyValueSize,
+                                      &isWriteable),
+             "Getting the input file maximum packet size property value size");
+
   CheckError(AudioFileGetProperty(audioConverterSettings->inputFile,
                                   kAudioFilePropertyMaximumPacketSize,
                                   &propertyValueSize,
@@ -64,11 +75,11 @@ UInt32 CalculateInputPacketsPerBuffer (AudioConverterRef audioConverter,
                                        UInt32 *ioOutputBufferSize,
                                        UInt32 inInputFileBytesPerPacket) {
   UInt32 result = 0;
+
+  UInt32 bufferBytesPerPacket = 0;
   
   if (inInputFileBytesPerPacket == 0) {
     NSPrint(@"Variable Bit Rate case\n");
-    
-    UInt32 bufferBytesPerPacket = 0;
     
     // Variable Bit Rate for the input audio data format
     // This means that there is n't constant number of bytes for every packet.
@@ -79,18 +90,20 @@ UInt32 CalculateInputPacketsPerBuffer (AudioConverterRef audioConverter,
                                          &size,
                                          &bufferBytesPerPacket),
                "Getting the Audio Converter Property: MaximumOutputPacketSize");
-    if (bufferBytesPerPacket > *ioOutputBufferSize) {
-      // It seems that we need a bigger output buffer, because the maximum output packet size is greater than the originally assumed output buffer size.
-      *ioOutputBufferSize = bufferBytesPerPacket;
-    }
     
-    result = *ioOutputBufferSize / bufferBytesPerPacket;
   }
   else {
     NSPrint(@"Constant Bit Rate case\n");
     
-    result = *ioOutputBufferSize / inInputFileBytesPerPacket;
+    bufferBytesPerPacket = inInputFileBytesPerPacket;
   }
+  
+  if (bufferBytesPerPacket > *ioOutputBufferSize) {
+    // It seems that we need a bigger output buffer
+    *ioOutputBufferSize = bufferBytesPerPacket;
+  }
+  
+  result = *ioOutputBufferSize / bufferBytesPerPacket;
   
   NSPrint(@"Packets Per Buffer: %d\n", result);
   
@@ -100,6 +113,13 @@ UInt32 CalculateInputPacketsPerBuffer (AudioConverterRef audioConverter,
 void InitializeInputFilePacketDescriptions (UInt32 inInputFileBytesPerPacket,
                                             UInt32 inPacketsPerBuffer,
                                             AudioStreamPacketDescription **oInputFilePacketDescriptions) {
+  NSPrint(@"InitializeInputFilePacketDescriptions...\n");
+  
+  if (*oInputFilePacketDescriptions) {
+    free(*oInputFilePacketDescriptions);
+    *oInputFilePacketDescriptions = NULL;
+  }
+  
   if (inInputFileBytesPerPacket == 0) {
     // VBR case
     *oInputFilePacketDescriptions = (AudioStreamPacketDescription *)malloc(sizeof(AudioStreamPacketDescription) * inPacketsPerBuffer);
@@ -111,6 +131,8 @@ void InitializeInputFilePacketDescriptions (UInt32 inInputFileBytesPerPacket,
 }
 
 UInt8 *AllocateMemoryForBuffer (UInt32 bufferSize) {
+  NSPrint(@"AllocateMemoryForBuffer...\n");
+  
   return (UInt8 *)malloc(sizeof(UInt8) * bufferSize);
 }
 
@@ -119,17 +141,18 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
                                  AudioBufferList *ioData,
                                  AudioStreamPacketDescription * _Nullable *outDataPacketDescription,
                                  void *inUserData) {
-  AudioConverterSettings *audioConverterSettings = (AudioConverterSettings *)inUserData;
+  NSPrint(@"AudioConverterCallback(): Minimum Number of Packets requested (*ioNumberDataPackets) %d\n", *ioNumberDataPackets);
   
-  ioData->mBuffers[0].mData = NULL;
-  ioData->mBuffers[0].mDataByteSize = 0;
+  AudioConverterSettings *audioConverterSettings = (AudioConverterSettings *)inUserData;
   
   if (audioConverterSettings->inputFilePacketIndex + *ioNumberDataPackets > audioConverterSettings->inputFilePacketCount) {
     // I am being asked to read past the input file total number of packets. I will read what is left.
-    *ioNumberDataPackets = audioConverterSettings->inputFilePacketCount - audioConverterSettings->inputFilePacketIndex;
+    *ioNumberDataPackets = (UInt32)(audioConverterSettings->inputFilePacketCount - audioConverterSettings->inputFilePacketIndex);
   }
   
-  if (*ioNumberDataPackets == 0) {
+  NSPrint(@"AudioConverterCallback(): Number of Packets returned for conversion %d\n", *ioNumberDataPackets);
+  
+  if (*ioNumberDataPackets <= 0) {
     return noErr;
   }
   
@@ -137,35 +160,46 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
     free(audioConverterSettings->sourceBuffer);
     audioConverterSettings->sourceBuffer = NULL;
   }
+
+  UInt32 inputBufferSize = audioConverterSettings->inputFilePacketMaxSize * (*ioNumberDataPackets);
+  audioConverterSettings->sourceBuffer = malloc(inputBufferSize);
+  memset(audioConverterSettings->sourceBuffer, 0, inputBufferSize);
+    
+  InitializeInputFilePacketDescriptions(audioConverterSettings->inputFormat.mBytesPerPacket,
+                                        *ioNumberDataPackets,
+                                        &audioConverterSettings->inputFilePacketDescriptions);
   
-  UInt32 sourceBufferSize = audioConverterSettings->inputFilePacketMaxSize * (*ioNumberDataPackets);
-  audioConverterSettings->sourceBuffer = malloc(sourceBufferSize);
-  memset(audioConverterSettings->sourceBuffer, 0, sourceBufferSize);
+  NSPrint(@"AudioConverterCallback(): calling AudioFileReadPacketData with inputBufferSize %d\n", inputBufferSize);
   
   OSStatus result = AudioFileReadPacketData(audioConverterSettings->inputFile,
                                             FALSE,
-                                            &sourceBufferSize,
+                                            &inputBufferSize,
                                             audioConverterSettings->inputFilePacketDescriptions,
                                             audioConverterSettings->inputFilePacketIndex,
                                             ioNumberDataPackets,
                                             audioConverterSettings->sourceBuffer);
   
+  NSPrint(@"AudioConverterCallback(): after AudioFileReadPacketData inputBufferSize is %d\n", inputBufferSize);
+  
   if (result == kAudioFileEndOfFileError && *ioNumberDataPackets) {
     result = noErr;
   }
-  else if (result != kAudioFileEndOfFileError){
+  else if (result != kAudioFileEndOfFileError && result != noErr) {
+    ioData->mBuffers[0].mData = NULL;
+    ioData->mBuffers[0].mDataByteSize = 0;
     return result;
   }
   
   audioConverterSettings->inputFilePacketIndex += *ioNumberDataPackets;
+
   ioData->mBuffers[0].mData = audioConverterSettings->sourceBuffer;
-  ioData->mBuffers[0].mDataByteSize = sourceBufferSize;
+  ioData->mBuffers[0].mDataByteSize = audioConverterSettings->inputFilePacketMaxSize * (*ioNumberDataPackets);
   if (outDataPacketDescription) {
     *outDataPacketDescription = audioConverterSettings->inputFilePacketDescriptions;
   }
   
   return noErr;
-}
+} // AudioConverterCallback()
 
 void Convert (AudioConverterSettings *audioConverterSettings) {
   NSPrint(@"Starting conversion...\n");
@@ -183,47 +217,50 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
                                                     &outputBufferSize,
                                                     audioConverterSettings->inputFormat.mBytesPerPacket);
   
-  InitializeInputFilePacketDescriptions(audioConverterSettings->inputFormat.mBytesPerPacket,
-                                        packetsPerBuffer,
-                                        &audioConverterSettings->inputFilePacketDescriptions);
-  
-  
-  UInt8 *outputBuffer = AllocateMemoryForBuffer(outputBufferSize);
-  
   UInt32 outputFilePacketPosition = 0;
   
+  AudioBufferList convertedData;
+  convertedData.mNumberBuffers = 1;
+  convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
+  
   while (true) {
-    AudioBufferList convertedData;
-    convertedData.mNumberBuffers = 1;
-    convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
     convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
-    convertedData.mBuffers[0].mData = outputBuffer;
+    convertedData.mBuffers[0].mData = AllocateMemoryForBuffer(outputBufferSize);
     
     UInt32 ioOutputDataPackets = packetsPerBuffer;
+    
+    NSPrint(@"About to call AudioConverterFillComplexBuffer()...\n");
+    
     OSStatus error = AudioConverterFillComplexBuffer(audioConverter,
                                                      AudioConverterCallback,
                                                      audioConverterSettings,
+                                                     
                                                      &ioOutputDataPackets,
                                                      &convertedData,
-                                                     audioConverterSettings->inputFilePacketDescriptions ? audioConverterSettings->inputFilePacketDescriptions : NULL);
+                                                     NULL);
+                                                     //audioConverterSettings->inputFilePacketDescriptions ? audioConverterSettings->inputFilePacketDescriptions : NULL);
+    NSPrint(@"error = %d, number of packets of converted data written: %d\n", error, ioOutputDataPackets);
+    
     if (error || !ioOutputDataPackets) {
+      NSPrint(@"breaking\n");
       break;
     }
     
     CheckError(AudioFileWritePackets(audioConverterSettings->outputFile,
                                      FALSE,
-                                     ioOutputDataPackets,
+                                     ioOutputDataPackets * audioConverterSettings->outputFormat.mBytesPerPacket,
                                      NULL, // the PCM output file is a constant bit rate and therefore doesn't use packet descriptions
                                      outputFilePacketPosition / audioConverterSettings->outputFormat.mBytesPerPacket,
                                      &ioOutputDataPackets,
                                      convertedData.mBuffers[0].mData),
                "Writing packets to output file");
     outputFilePacketPosition += (ioOutputDataPackets * audioConverterSettings->outputFormat.mBytesPerPacket);
+    
+    convertedData.mBuffers[0].mDataByteSize = 0;
+    free(convertedData.mBuffers[0].mData);
   }
   
   CheckError(AudioConverterDispose(audioConverter), "Disposing the Audio Converter");
-  
-  free(outputBuffer);
   
   return;
 }

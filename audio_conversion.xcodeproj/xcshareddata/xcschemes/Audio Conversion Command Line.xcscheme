@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/panayotismatsinopoulos/Documents/learning_core_audio/chapter-06/prelude.mp3"
+            argument = "trixtor.mp3"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
