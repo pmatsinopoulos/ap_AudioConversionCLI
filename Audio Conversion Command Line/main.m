@@ -212,14 +212,14 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   AudioBufferList convertedData;
   convertedData.mNumberBuffers = 1;
   convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
-  
+  convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
+  convertedData.mBuffers[0].mData = AllocateMemoryForBuffer(outputBufferSize);
+
   audioConverterSettings->callsToCallback = 0;
   UInt32 numberOfLoops = 0;
   
   while (true) {
     numberOfLoops++;
-    convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
-    convertedData.mBuffers[0].mData = AllocateMemoryForBuffer(outputBufferSize);
     
     UInt32 ioOutputDataPackets = audioConverterSettings->outputBufferPackets;
     
@@ -248,11 +248,12 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
                "Writing packets to output file");
     outputFilePacketPosition += ioOutputDataPackets;
     
-    convertedData.mBuffers[0].mDataByteSize = 0;
-    free(convertedData.mBuffers[0].mData);
-    convertedData.mBuffers[0].mData = NULL;
+    memset(convertedData.mBuffers[0].mData, 0, outputBufferSize);
   }
-  
+
+  free(convertedData.mBuffers[0].mData);
+  convertedData.mBuffers[0].mData = NULL;
+
   CheckError(AudioConverterDispose(audioConverter), "Disposing the Audio Converter");
   
   NSPrint(@"Number of calls to AudioConverterFillComplexBuffer(): %d\n", numberOfLoops);
