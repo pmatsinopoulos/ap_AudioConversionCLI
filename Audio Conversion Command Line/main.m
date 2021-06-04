@@ -118,12 +118,6 @@ void InitializeInputFilePacketDescriptions (UInt32 iInputFileBytesPerPacket,
   }
 }
 
-UInt8 *AllocateMemoryForBuffer (UInt32 bufferSize) {
-  NSPrint(@"AllocateMemoryForBuffer() will allocate %d bytes\n", bufferSize);
-  
-  return (UInt8 *)malloc(sizeof(UInt8) * bufferSize);
-}
-
 OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
                                  UInt32 *ioNumberDataPackets,
                                  AudioBufferList *ioData,
@@ -213,7 +207,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   convertedData.mNumberBuffers = 1;
   convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
   convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
-  convertedData.mBuffers[0].mData = AllocateMemoryForBuffer(outputBufferSize);
+  convertedData.mBuffers[0].mData = (UInt8 *)malloc(sizeof(UInt8) * outputBufferSize);
 
   audioConverterSettings->callsToCallback = 0;
   UInt32 numberOfLoops = 0;
