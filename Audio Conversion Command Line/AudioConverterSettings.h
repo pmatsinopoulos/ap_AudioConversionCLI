@@ -24,9 +24,7 @@ typedef struct AudioConverterSettings {
   UInt32 outputBufferPackets;
   AudioStreamPacketDescription *outputFilePacketDescriptions;
   
-  UInt64 callsToCallback;
-  
-//  void *sourceBuffer;
+  UInt64 callsToCallback;  
 } AudioConverterSettings;
 
 #endif /* AudioConverterSettings_h */
