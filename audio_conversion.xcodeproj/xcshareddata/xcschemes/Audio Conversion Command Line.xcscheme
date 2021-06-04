@@ -59,6 +59,10 @@
             argument = "10000"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "10000"
+            isEnabled = "YES">
+         </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
    <ProfileAction

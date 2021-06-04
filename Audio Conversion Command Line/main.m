@@ -132,6 +132,10 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
   NSPrint(@"AudioConverterCallback(): ....................................................... input packet index: %d\n", audioConverterSettings->inputFilePacketIndex);
   NSPrint(@"AudioConverterCallback(): ....................................................... calls to callback: %d\n", audioConverterSettings->callsToCallback);
   
+  if (*ioNumberDataPackets < audioConverterSettings->inputMinimumNumberOfPacketsToRead) {
+    *ioNumberDataPackets = audioConverterSettings->inputMinimumNumberOfPacketsToRead;
+  }
+    
   if (audioConverterSettings->inputFilePacketIndex + *ioNumberDataPackets > audioConverterSettings->inputFilePacketCount) {
     // I am being asked to read past the input file total number of packets. I will read what is left.
     *ioNumberDataPackets = (UInt32)(audioConverterSettings->inputFilePacketCount - audioConverterSettings->inputFilePacketIndex);
@@ -199,7 +203,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
     
   UInt32 outputBufferSize = 0;
   outputBufferSize = CalculateOutputBufferSize(audioConverter,
-                                               audioConverterSettings->outputBufferPackets);
+                                               audioConverterSettings->outputBufferSizeInPackets);
   
   UInt32 outputFilePacketPosition = 0;
   
@@ -215,7 +219,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   while (true) {
     numberOfLoops++;
     
-    UInt32 ioOutputDataPackets = audioConverterSettings->outputBufferPackets;
+    UInt32 ioOutputDataPackets = audioConverterSettings->outputBufferSizeInPackets;
     
     NSPrint(@"Convert(): About to call AudioConverterFillComplexBuffer()...\n");
     
@@ -257,9 +261,11 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
 
 int main(int argc, const char * argv[]) {
   @autoreleasepool {
-    if (argc < 3) {
+    if (argc < 4) {
       NSLog(@"1st arguments: You need to give the input file for converting. You can use any Core Audio supported file such as .mp3, .aac, .m4a, .wav, .aif e.t.c.\n");
-      NSLog(@"2nd argument: You need to give the size of the conversion output buffer in number of packets\n");
+      NSLog(@"2nd argument: You need to give the minimum number of packets to read from the input file.\n");
+      NSLog(@"3rd argument: You need to give the size of the conversion output buffer in number of packets.\n");
+      NSLog(@"Example: audio_conversion trixtor.mp3 10000 10000\n");
       return 1;
     }
     
@@ -269,13 +275,16 @@ int main(int argc, const char * argv[]) {
     
     GetInputAudioFormatAndPacketsInfo(&audioConverterSettings);
     
+    // The bigger the number of packets to read the less the number of calls to +AudioConverterCallback+ function
+    audioConverterSettings.inputMinimumNumberOfPacketsToRead = atoi(argv[2]);
+    
     SetUpAudioDataSettingsForOutputFile(&audioConverterSettings);
     
     InitializeOutputAudioFile(&audioConverterSettings);
     
     // The bigger the number of packets, the less the number of calls to AudioConverterFillComplexBuffer() and program runs faster.
     // However, the number of calls to AudioConverterCallback callback is not affected by this number.
-    audioConverterSettings.outputBufferPackets = atoi(argv[2]);
+    audioConverterSettings.outputBufferSizeInPackets = atoi(argv[3]);
     
     Convert(&audioConverterSettings);
     
