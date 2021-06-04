@@ -171,7 +171,10 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
     result = noErr;
   }
   else if (result != kAudioFileEndOfFileError && result != noErr) {
-    ioData->mBuffers[0].mData = NULL;
+    if (ioData->mBuffers[0].mData) {
+      free(ioData->mBuffers[0].mData);
+      ioData->mBuffers[0].mData = NULL;
+    }
     ioData->mBuffers[0].mDataByteSize = 0;
     return result;
   }
