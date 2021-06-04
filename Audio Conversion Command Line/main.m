@@ -59,12 +59,7 @@ void SetUpAudioDataSettingsForOutputFile (AudioConverterSettings *outAudioConver
   outAudioConverterSettings->outputFormat.mFramesPerPacket = outAudioConverterSettings->outputFormat.mBytesPerPacket / outAudioConverterSettings->outputFormat.mBytesPerFrame;
   outAudioConverterSettings->outputFormat.mChannelsPerFrame = 2; // stereo
   outAudioConverterSettings->outputFormat.mBitsPerChannel = 16;
-  
-  // since LPCM does not need descriptions per packet, we set this to NULL. However, if
-  // we were using a VBR output format we would have had to allocate enough packet descriptions
-  // to host the +outAudioConverterSettings->outputBufferPackets+ number of packets.
-  outAudioConverterSettings->outputFilePacketDescriptions = NULL;
-  
+    
   return;
 }
 
@@ -212,6 +207,8 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
   convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
   convertedData.mBuffers[0].mData = (UInt8 *)malloc(sizeof(UInt8) * outputBufferSize);
+  
+  AudioStreamPacketDescription *outputFilePacketDescriptions = (AudioStreamPacketDescription *)malloc(sizeof(AudioStreamPacketDescription) * audioConverterSettings->outputBufferSizeInPackets);
 
   audioConverterSettings->callsToCallback = 0;
   UInt32 numberOfLoops = 0;
@@ -228,7 +225,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
                                                      audioConverterSettings,
                                                      &ioOutputDataPackets,
                                                      &convertedData,
-                                                     audioConverterSettings->outputFilePacketDescriptions ? audioConverterSettings->outputFilePacketDescriptions : NULL);
+                                                     outputFilePacketDescriptions);
     NSPrint(@"Convert(): error = %d, number of packets of converted data created: %d\n", error, ioOutputDataPackets);
     
     if (error || !ioOutputDataPackets) {
@@ -239,7 +236,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
     CheckError(AudioFileWritePackets(audioConverterSettings->outputFile,
                                      FALSE,
                                      ioOutputDataPackets * audioConverterSettings->outputFormat.mBytesPerPacket,
-                                     audioConverterSettings->outputFilePacketDescriptions ? audioConverterSettings->outputFilePacketDescriptions : NULL,
+                                     outputFilePacketDescriptions ? outputFilePacketDescriptions : NULL,
                                      outputFilePacketPosition,
                                      &ioOutputDataPackets,
                                      convertedData.mBuffers[0].mData),
@@ -248,6 +245,9 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
     
     memset(convertedData.mBuffers[0].mData, 0, outputBufferSize);
   }
+  
+  free(outputFilePacketDescriptions);
+  outputFilePacketDescriptions = NULL;
 
   free(convertedData.mBuffers[0].mData);
   convertedData.mBuffers[0].mData = NULL;
@@ -293,10 +293,6 @@ int main(int argc, const char * argv[]) {
     if (audioConverterSettings.inputFilePacketDescriptions) {
       free(audioConverterSettings.inputFilePacketDescriptions);
       audioConverterSettings.inputFilePacketDescriptions = NULL;
-    }
-    if (audioConverterSettings.outputFilePacketDescriptions) {
-      free(audioConverterSettings.outputFilePacketDescriptions);
-      audioConverterSettings.outputFilePacketDescriptions = NULL;
     }
     
     NSPrint(@"...Bye!\n");
