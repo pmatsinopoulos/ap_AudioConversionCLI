@@ -19,6 +19,7 @@ typedef struct AudioConverterSettings {
   UInt64 inputFilePacketCount;
   UInt32 inputFilePacketMaxSize;
   UInt32 inputMinimumNumberOfPacketsToRead;
+  Byte*  inputFileEncodingMagicCookie;
   
   AudioStreamPacketDescription *inputFilePacketDescriptions;
   

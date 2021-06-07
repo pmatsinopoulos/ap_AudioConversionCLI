@@ -12,6 +12,13 @@
 		E5E24058266241F700F74502 /* CheckError.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E24057266241F700F74502 /* CheckError.m */; };
 		E5E2405E266245A900F74502 /* OpenAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E2405D266245A900F74502 /* OpenAudioFile.m */; };
 		E5E2406426649EF500F74502 /* CharPointerFilenameToNSURLp.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E2406326649EF500F74502 /* CharPointerFilenameToNSURLp.m */; };
+		E5E2406B266ABEDF00F74502 /* GetAudioFileInformationProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E2406A266ABEDE00F74502 /* GetAudioFileInformationProperty.m */; };
+		E5E24070266C8B0D00F74502 /* PrintAudioFormatFlags.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E2406F266C8B0C00F74502 /* PrintAudioFormatFlags.m */; };
+		E5E24075266C8C7800F74502 /* PrintAudioFormatID.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E24074266C8C7800F74502 /* PrintAudioFormatID.m */; };
+		E5E2407A266C91F300F74502 /* PrintMagicCookieEncodingInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E24079266C91F300F74502 /* PrintMagicCookieEncodingInformation.m */; };
+		E5E2407F266CBD3500F74502 /* GetEncodingMagicCookie.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E2407E266CBD3500F74502 /* GetEncodingMagicCookie.m */; };
+		E5E24084266D43CF00F74502 /* Input.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E24083266D43CF00F74502 /* Input.m */; };
+		E5E24088266DD74300F74502 /* AskUserForOutputFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E24087266DD74300F74502 /* AskUserForOutputFormat.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +45,20 @@
 		E5E240602662460E00F74502 /* OpenAudioFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenAudioFile.h; sourceTree = "<group>"; };
 		E5E2406326649EF500F74502 /* CharPointerFilenameToNSURLp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CharPointerFilenameToNSURLp.m; sourceTree = "<group>"; };
 		E5E2406626649FA500F74502 /* CharPointerFilenameToNSURLp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CharPointerFilenameToNSURLp.h; sourceTree = "<group>"; };
+		E5E2406A266ABEDE00F74502 /* GetAudioFileInformationProperty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GetAudioFileInformationProperty.m; sourceTree = "<group>"; };
+		E5E2406D266ABF8800F74502 /* GetAudioFileInformationProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GetAudioFileInformationProperty.h; sourceTree = "<group>"; };
+		E5E2406F266C8B0C00F74502 /* PrintAudioFormatFlags.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintAudioFormatFlags.m; sourceTree = "<group>"; };
+		E5E24072266C8B3700F74502 /* PrintAudioFormatFlags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintAudioFormatFlags.h; sourceTree = "<group>"; };
+		E5E24074266C8C7800F74502 /* PrintAudioFormatID.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintAudioFormatID.m; sourceTree = "<group>"; };
+		E5E24077266C8CF000F74502 /* PrintAudioFormatID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintAudioFormatID.h; sourceTree = "<group>"; };
+		E5E24079266C91F300F74502 /* PrintMagicCookieEncodingInformation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintMagicCookieEncodingInformation.m; sourceTree = "<group>"; };
+		E5E2407C266C92BF00F74502 /* PrintMagicCookieEncodingInformation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintMagicCookieEncodingInformation.h; sourceTree = "<group>"; };
+		E5E2407E266CBD3500F74502 /* GetEncodingMagicCookie.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GetEncodingMagicCookie.m; sourceTree = "<group>"; };
+		E5E24081266CBD4600F74502 /* GetEncodingMagicCookie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GetEncodingMagicCookie.h; sourceTree = "<group>"; };
+		E5E24083266D43CF00F74502 /* Input.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Input.m; sourceTree = "<group>"; };
+		E5E24086266D43FA00F74502 /* Input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Input.h; sourceTree = "<group>"; };
+		E5E24087266DD74300F74502 /* AskUserForOutputFormat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AskUserForOutputFormat.m; sourceTree = "<group>"; };
+		E5E2408B266DD7D500F74502 /* AskUserForAudioFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AskUserForAudioFormat.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +101,20 @@
 				E5E240602662460E00F74502 /* OpenAudioFile.h */,
 				E5E2406326649EF500F74502 /* CharPointerFilenameToNSURLp.m */,
 				E5E2406626649FA500F74502 /* CharPointerFilenameToNSURLp.h */,
+				E5E2406A266ABEDE00F74502 /* GetAudioFileInformationProperty.m */,
+				E5E2406D266ABF8800F74502 /* GetAudioFileInformationProperty.h */,
+				E5E2406F266C8B0C00F74502 /* PrintAudioFormatFlags.m */,
+				E5E24072266C8B3700F74502 /* PrintAudioFormatFlags.h */,
+				E5E24074266C8C7800F74502 /* PrintAudioFormatID.m */,
+				E5E24077266C8CF000F74502 /* PrintAudioFormatID.h */,
+				E5E24079266C91F300F74502 /* PrintMagicCookieEncodingInformation.m */,
+				E5E2407C266C92BF00F74502 /* PrintMagicCookieEncodingInformation.h */,
+				E5E2407E266CBD3500F74502 /* GetEncodingMagicCookie.m */,
+				E5E24081266CBD4600F74502 /* GetEncodingMagicCookie.h */,
+				E5E24083266D43CF00F74502 /* Input.m */,
+				E5E24086266D43FA00F74502 /* Input.h */,
+				E5E24087266DD74300F74502 /* AskUserForOutputFormat.m */,
+				E5E2408B266DD7D500F74502 /* AskUserForAudioFormat.h */,
 			);
 			path = "Audio Conversion Command Line";
 			sourceTree = "<group>";
@@ -141,10 +176,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E5E24053266238E200F74502 /* NSPrint.m in Sources */,
+				E5E2407F266CBD3500F74502 /* GetEncodingMagicCookie.m in Sources */,
 				E5E24058266241F700F74502 /* CheckError.m in Sources */,
 				E5E2406426649EF500F74502 /* CharPointerFilenameToNSURLp.m in Sources */,
 				E5E2405E266245A900F74502 /* OpenAudioFile.m in Sources */,
+				E5E2407A266C91F300F74502 /* PrintMagicCookieEncodingInformation.m in Sources */,
+				E5E24088266DD74300F74502 /* AskUserForOutputFormat.m in Sources */,
+				E5E24075266C8C7800F74502 /* PrintAudioFormatID.m in Sources */,
+				E5E24084266D43CF00F74502 /* Input.m in Sources */,
 				E5E2404B266236F200F74502 /* main.m in Sources */,
+				E5E24070266C8B0D00F74502 /* PrintAudioFormatFlags.m in Sources */,
+				E5E2406B266ABEDF00F74502 /* GetAudioFileInformationProperty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

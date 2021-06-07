@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "trixtor.mp3"
+            argument = "cramer-10.caf"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
