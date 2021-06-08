@@ -9,6 +9,6 @@
 #define PrintAudioStreamBasicDescription_h
 #import <AudioToolbox/AudioToolbox.h>
 
-void PrintAudioStreamBasicDescription(const AudioStreamBasicDescription iAudioStreamBasicDescription);
+void PrintAudioStreamBasicDescription(AudioStreamBasicDescription iAudioStreamBasicDescription);
 
 #endif /* PrintAudioStreamBasicDescription_h */

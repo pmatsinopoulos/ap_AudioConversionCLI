@@ -109,44 +109,68 @@
 		E5E24049266236F200F74502 /* Audio Conversion Command Line */ = {
 			isa = PBXGroup;
 			children = (
+				E5E240B8266FE3D900F74502 /* AudioUtils */,
+				E5E240B5266FE2C500F74502 /* Utils */,
 				E5E2404A266236F200F74502 /* main.m */,
+				E5E2405B2662443600F74502 /* AudioConverterSettings.h */,
+			);
+			path = "Audio Conversion Command Line";
+			sourceTree = "<group>";
+		};
+		E5E240B5266FE2C500F74502 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E5E24083266D43CF00F74502 /* Input.m */,
+				E5E24086266D43FA00F74502 /* Input.h */,
+				E5E2406326649EF500F74502 /* CharPointerFilenameToNSURLp.m */,
+				E5E2406626649FA500F74502 /* CharPointerFilenameToNSURLp.h */,
 				E5E24052266238E200F74502 /* NSPrint.m */,
 				E5E240552662390800F74502 /* NSPrint.h */,
 				E5E24057266241F700F74502 /* CheckError.m */,
 				E5E2405A2662423300F74502 /* CheckError.h */,
-				E5E2405B2662443600F74502 /* AudioConverterSettings.h */,
-				E5E2405D266245A900F74502 /* OpenAudioFile.m */,
-				E5E240602662460E00F74502 /* OpenAudioFile.h */,
-				E5E2406326649EF500F74502 /* CharPointerFilenameToNSURLp.m */,
-				E5E2406626649FA500F74502 /* CharPointerFilenameToNSURLp.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		E5E240B8266FE3D900F74502 /* AudioUtils */ = {
+			isa = PBXGroup;
+			children = (
+				E5E240BD266FE53B00F74502 /* PrintUtils */,
 				E5E2406A266ABEDE00F74502 /* GetAudioFileInformationProperty.m */,
 				E5E2406D266ABF8800F74502 /* GetAudioFileInformationProperty.h */,
+				E5E2407E266CBD3500F74502 /* GetEncodingMagicCookie.m */,
+				E5E24081266CBD4600F74502 /* GetEncodingMagicCookie.h */,
+				E5E24087266DD74300F74502 /* AskUserForOutputFormat.m */,
+				E5E2408B266DD7D500F74502 /* AskUserForAudioFormat.h */,
+				E5E2405D266245A900F74502 /* OpenAudioFile.m */,
+				E5E240602662460E00F74502 /* OpenAudioFile.h */,
+				E5E240A5266F594C00F74502 /* GetNumberOfPackets.m */,
+				E5E240A8266F597C00F74502 /* GetNumberOfPackets.h */,
+				E5E240AA266F5B7600F74502 /* GetMaximumPacketSize.m */,
+				E5E240AD266F5BE900F74502 /* GetMaximumPacketSize.h */,
+			);
+			path = AudioUtils;
+			sourceTree = "<group>";
+		};
+		E5E240BD266FE53B00F74502 /* PrintUtils */ = {
+			isa = PBXGroup;
+			children = (
 				E5E2406F266C8B0C00F74502 /* PrintAudioFormatFlags.m */,
 				E5E24072266C8B3700F74502 /* PrintAudioFormatFlags.h */,
 				E5E24074266C8C7800F74502 /* PrintAudioFormatID.m */,
 				E5E24077266C8CF000F74502 /* PrintAudioFormatID.h */,
 				E5E24079266C91F300F74502 /* PrintMagicCookieEncodingInformation.m */,
 				E5E2407C266C92BF00F74502 /* PrintMagicCookieEncodingInformation.h */,
-				E5E2407E266CBD3500F74502 /* GetEncodingMagicCookie.m */,
-				E5E24081266CBD4600F74502 /* GetEncodingMagicCookie.h */,
-				E5E24083266D43CF00F74502 /* Input.m */,
-				E5E24086266D43FA00F74502 /* Input.h */,
-				E5E24087266DD74300F74502 /* AskUserForOutputFormat.m */,
-				E5E2408B266DD7D500F74502 /* AskUserForAudioFormat.h */,
 				E5E2408D266F21A700F74502 /* PrintAudioFileDictionary.m */,
 				E5E24090266F221600F74502 /* PrintAudioFileDictionary.h */,
 				E5E24097266F23F200F74502 /* PrintOutputFileAudioInformation.m */,
 				E5E2409A266F241900F74502 /* PrintOutputFileAudioInformation.h */,
 				E5E2409C266F264100F74502 /* PrintFileAudioInformation.m */,
 				E5E2409F266F266E00F74502 /* PrintFileAudioInformation.h */,
-				E5E240A5266F594C00F74502 /* GetNumberOfPackets.m */,
-				E5E240A8266F597C00F74502 /* GetNumberOfPackets.h */,
-				E5E240AA266F5B7600F74502 /* GetMaximumPacketSize.m */,
-				E5E240AD266F5BE900F74502 /* GetMaximumPacketSize.h */,
 				E5E240AF266F9FB500F74502 /* PrintAudioStreamBasicDescription.m */,
 				E5E240B2266FA03F00F74502 /* PrintAudioStreamBasicDescription.h */,
 			);
-			path = "Audio Conversion Command Line";
+			path = PrintUtils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

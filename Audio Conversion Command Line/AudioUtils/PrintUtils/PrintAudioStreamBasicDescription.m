@@ -9,7 +9,7 @@
 #import <CoreAudioTypes/CoreAudioBaseTypes.h>
 #import "NSPrint.h"
 
-void PrintAudioStreamBasicDescription(const AudioStreamBasicDescription iAudioStreamBasicDescription) {
+void PrintAudioStreamBasicDescription(AudioStreamBasicDescription iAudioStreamBasicDescription) {
   NSPrint(@"Sample Rate: %.2f\n", iAudioStreamBasicDescription.mSampleRate);
   NSPrint(@"Bits per channel: %d\n", iAudioStreamBasicDescription.mBitsPerChannel);
   NSPrint(@"Channels per Frame: %d\n", iAudioStreamBasicDescription.mChannelsPerFrame);

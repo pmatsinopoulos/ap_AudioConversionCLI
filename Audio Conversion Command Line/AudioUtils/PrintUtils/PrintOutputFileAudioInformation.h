@@ -8,8 +8,8 @@
 #ifndef PrintOutputFileAudioInformation_h
 #define PrintOutputFileAudioInformation_h
 
-#import "AudioConverterSettings.h"
+#import <AudioToolbox/AudioToolbox.h>
 
-void PrintOutputFileAudioInformation(const AudioConverterSettings *iAudioConverterSettings);
+void PrintOutputFileAudioInformation(AudioStreamBasicDescription iAudioStreamBasicDescription);
   
 #endif /* PrintOutputFileAudioInformation_h */

@@ -9,15 +9,14 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "NSPrint.h"
 #import "AudioConverterSettings.h"
-#import "OpenAudioFile.h"
 #import "CheckError.h"
 #import "CharPointerFilenameToNSURLp.h"
-#import "GetAudioFileInformationProperty.h"
 #import "GetEncodingMagicCookie.h"
 #import "AskUserForAudioFormat.h"
 #import "PrintOutputFileAudioInformation.h"
 #import "PrintFileAudioInformation.h"
 #import "GetNumberOfPackets.h"
+#import "OpenAudioFile.h"
 
 #define OUTPUT_FILE_NAME "output.caf"
 #define OUTPUT_FILE_TYPE kAudioFileCAFType
@@ -316,7 +315,7 @@ int main(int argc, const char * argv[]) {
     
     NSPrint(@"---- Output File Info BEFORE conversion ---\n");
     
-    PrintOutputFileAudioInformation(&audioConverterSettings);
+    PrintOutputFileAudioInformation(audioConverterSettings.outputFormat);
     
     NSPrint(@"--------------------------\n");
     NSPrint(@"...tap <Enter> to continue\n");
