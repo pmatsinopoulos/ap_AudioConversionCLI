@@ -8,6 +8,9 @@
 #ifndef AudioConverterSettings_h
 #define AudioConverterSettings_h
 
+#import <CoreAudioTypes/CoreAudioBaseTypes.h>
+#import <AudioToolbox/AudioFile.h>
+
 typedef struct AudioConverterSettings {
   AudioStreamBasicDescription inputFormat;
   AudioStreamBasicDescription outputFormat;

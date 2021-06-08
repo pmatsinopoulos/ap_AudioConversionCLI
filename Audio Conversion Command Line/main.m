@@ -13,11 +13,14 @@
 #import "CheckError.h"
 #import "CharPointerFilenameToNSURLp.h"
 #import "GetAudioFileInformationProperty.h"
-#import "PrintAudioFormatFlags.h"
-#import "PrintAudioFormatID.h"
-#import "PrintMagicCookieEncodingInformation.h"
 #import "GetEncodingMagicCookie.h"
 #import "AskUserForAudioFormat.h"
+#import "PrintOutputFileAudioInformation.h"
+#import "PrintFileAudioInformation.h"
+#import "GetNumberOfPackets.h"
+
+#define OUTPUT_FILE_NAME "output.caf"
+#define OUTPUT_FILE_TYPE kAudioFileCAFType
 
 void GetInputAudioFormatAndPacketsInfo (AudioConverterSettings *audioConverterSettings) {
   UInt32 propertyValueSize = sizeof(AudioStreamBasicDescription);
@@ -27,20 +30,12 @@ void GetInputAudioFormatAndPacketsInfo (AudioConverterSettings *audioConverterSe
                                   &audioConverterSettings->inputFormat),
              "Getting the Audio Stream Basic Description of the input audio file");
   
-  UInt32 isWriteable = 0;
-  CheckError(AudioFileGetPropertyInfo(audioConverterSettings->inputFile,
-                                      kAudioFilePropertyAudioDataPacketCount,
-                                      &propertyValueSize,
-                                      &isWriteable),
-             "Getting the input file total number of packets property value size");
+  GetNumberOfPackets(audioConverterSettings->inputFile, "Getting number of packets of input file", &audioConverterSettings->inputFilePacketCount);
   
-  CheckError(AudioFileGetProperty(audioConverterSettings->inputFile,
-                                  kAudioFilePropertyAudioDataPacketCount,
-                                  &propertyValueSize,
-                                  &audioConverterSettings->inputFilePacketCount),
-             "Getting the input file total number of packets");
   //  NSPrint(@"Number of input file audio data packet count %d\n", audioConverterSettings->inputFilePacketCount);
   
+  propertyValueSize = sizeof(UInt32);
+  UInt32 isWriteable = 0;
   CheckError(AudioFileGetPropertyInfo(audioConverterSettings->inputFile,
                                       kAudioFilePropertyMaximumPacketSize,
                                       &propertyValueSize,
@@ -79,8 +74,8 @@ void SetUpAudioDataSettingsForOutputFile (AudioConverterSettings *outAudioConver
 }
 
 void InitializeOutputAudioFile (AudioConverterSettings *audioConverterSettings) {
-  CheckError(AudioFileCreateWithURL((__bridge CFURLRef) CharPointerFilenameToNSURLp("output.caf"),
-                                    kAudioFileCAFType,
+  CheckError(AudioFileCreateWithURL((__bridge CFURLRef) CharPointerFilenameToNSURLp(OUTPUT_FILE_NAME),
+                                    OUTPUT_FILE_TYPE,
                                     &audioConverterSettings->outputFormat,
                                     kAudioFileFlags_EraseFile,
                                     &audioConverterSettings->outputFile),
@@ -293,73 +288,6 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   return;
 }
 
-void PrintAudioFileDictionary(AudioFileID iAudioFile) {
-  CFDictionaryRef dictionary;
-  
-  GetAudioFileInformationProperty(iAudioFile, &dictionary);
-  
-  NSPrint(@"dictionary: %@\n", dictionary);
-  
-  CFRelease(dictionary);
-}
-
-void PrintInputFileAudioInformation(const AudioConverterSettings *iAudioConverterSettings) {
-  NSPrint(@"---- Input File Info ---\n");
-  const AudioStreamBasicDescription *lAudioStreamBasicDescription = &iAudioConverterSettings->inputFormat;
-  
-  PrintAudioFileDictionary(iAudioConverterSettings->inputFile);
-  
-  NSPrint(@"Sample Rate: %.2f\n", lAudioStreamBasicDescription->mSampleRate);
-  NSPrint(@"Bits per channel: %d\n", lAudioStreamBasicDescription->mBitsPerChannel);
-  NSPrint(@"Channels per Frame: %d\n", lAudioStreamBasicDescription->mChannelsPerFrame);
-  NSPrint(@"Bytes per frame: %d\n",  lAudioStreamBasicDescription->mBytesPerFrame);
-  
-  NSPrint(@"Bytes per packet: %d\n", lAudioStreamBasicDescription->mBytesPerPacket);
-  NSPrint(@"Frames per Packet: %d\n", lAudioStreamBasicDescription->mFramesPerPacket);
-  NSPrint(@"Uncompressed Audio: %@\n", lAudioStreamBasicDescription->mFramesPerPacket == 1 ? @"YES" : @"NO");
-  NSPrint(@"VBR or CBR?: %@\n", lAudioStreamBasicDescription->mBytesPerPacket > 0 ? @"CBR" : @"VBR");
-    
-  PrintAudioFormatFlags(lAudioStreamBasicDescription->mFormatFlags);
-  
-  PrintAudioFormatID(lAudioStreamBasicDescription->mFormatID);
-  
-  NSPrint(@"Number of packets: %ld\n", iAudioConverterSettings->inputFilePacketCount);
-  
-  NSPrint(@"Maximum packet size: %d\n", iAudioConverterSettings->inputFilePacketMaxSize);
-  
-  PrintMagicCookieEncodingInformation(iAudioConverterSettings->inputFile);
-  
-  NSPrint(@"--------------------------\n");
-  
-  NSPrint(@"...tap <Enter> to continue\n");
-  
-  getchar();
-}
-
-void PrintOutputFileAudioInformation(const AudioConverterSettings *iAudioConverterSettings) {
-  const AudioStreamBasicDescription *lAudioStreamBasicDescription = &iAudioConverterSettings->outputFormat;
-    
-  NSPrint(@"Sample Rate: %.2f\n", lAudioStreamBasicDescription->mSampleRate);
-  NSPrint(@"Bits per channel: %d\n", lAudioStreamBasicDescription->mBitsPerChannel);
-  NSPrint(@"Channels per Frame: %d\n", lAudioStreamBasicDescription->mChannelsPerFrame);
-  NSPrint(@"Bytes per frame: %d\n",  lAudioStreamBasicDescription->mBytesPerFrame);
-  
-  NSPrint(@"Bytes per packet: %d\n", lAudioStreamBasicDescription->mBytesPerPacket);
-  NSPrint(@"Frames per Packet: %d\n", lAudioStreamBasicDescription->mFramesPerPacket);
-  NSPrint(@"Uncompressed Audio: %@\n", lAudioStreamBasicDescription->mFramesPerPacket == 1 ? @"YES" : @"NO");
-  NSPrint(@"VBR or CBR?: %@\n", lAudioStreamBasicDescription->mBytesPerPacket > 0 ? @"CBR" : @"VBR");
-    
-  PrintAudioFormatFlags(lAudioStreamBasicDescription->mFormatFlags);
-  
-  PrintAudioFormatID(lAudioStreamBasicDescription->mFormatID);
-    
-  NSPrint(@"--------------------------\n");
-  
-  NSPrint(@"...tap <Enter> to continue\n");
-  
-  getchar();
-}
-
 int main(int argc, const char * argv[]) {
   @autoreleasepool {
     if (argc < 4) {
@@ -370,19 +298,29 @@ int main(int argc, const char * argv[]) {
       return 1;
     }
     
+    NSPrint(@"---- Input audio file info ----->\n");
+    
+    PrintFileAudioInformation(argv[1]);
+    
+    NSPrint(@"--------------------------\n");
+    NSPrint(@"...tap <Enter> to continue\n");
+    getchar();
+
     AudioConverterSettings audioConverterSettings = {0};
     
     OpenAudioFile(argv[1], &audioConverterSettings.inputFile);
     
     GetInputAudioFormatAndPacketsInfo(&audioConverterSettings);
     
-    PrintInputFileAudioInformation(&audioConverterSettings);
-
     SetUpAudioDataSettingsForOutputFile(&audioConverterSettings);
     
     NSPrint(@"---- Output File Info BEFORE conversion ---\n");
     
     PrintOutputFileAudioInformation(&audioConverterSettings);
+    
+    NSPrint(@"--------------------------\n");
+    NSPrint(@"...tap <Enter> to continue\n");
+    getchar();
 
     NSPrint(@"I am ready to convert...tap <Enter> to start\n");
     
@@ -405,6 +343,12 @@ int main(int argc, const char * argv[]) {
       free(audioConverterSettings.inputFilePacketDescriptions);
       audioConverterSettings.inputFilePacketDescriptions = NULL;
     }
+    
+    NSPrint(@"---- end of conversion ---\n\n");
+    
+    NSPrint(@"---- Output audio file info ----->\n");
+    PrintFileAudioInformation(OUTPUT_FILE_NAME);
+    NSPrint(@"--------------------------\n\n");
     
     NSPrint(@"...Bye!\n");
   }
