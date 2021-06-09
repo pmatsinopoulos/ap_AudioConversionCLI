@@ -9,13 +9,13 @@
 #import <AudioToolbox/AudioFile.h>
 #import <CoreFoundation/CFDictionary.h>
 #import <CoreFoundation/CFBase.h>
-#import "GetAudioFileInformationProperty.h"
+#import "GetAudioFilePropertyInfoDictionary.h"
 #import "NSPrint.h"
 
 void PrintAudioFileDictionary(AudioFileID iAudioFile) {
   CFDictionaryRef dictionary;
   
-  GetAudioFileInformationProperty(iAudioFile, &dictionary);
+  GetAudioFilePropertyInfoDictionary(iAudioFile, &dictionary);
   
   NSPrint(@"dictionary: %@\n", dictionary);
   

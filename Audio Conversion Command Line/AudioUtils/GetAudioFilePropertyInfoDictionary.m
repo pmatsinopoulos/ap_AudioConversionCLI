@@ -1,5 +1,5 @@
 //
-//  GetAudioFileInformationProperty.m
+//  GetAudioFilePropertyInfoDictionary.m
 //  audio_conversion
 //
 //  Created by Panayotis Matsinopoulos on 4/6/21.
@@ -9,7 +9,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "CheckError.h"
 
-void GetAudioFileInformationProperty(AudioFileID audioFile, CFDictionaryRef *dictionary) {
+void GetAudioFilePropertyInfoDictionary(AudioFileID audioFile, CFDictionaryRef *dictionary) {
   UInt32 dictionarySize = 0;
   CheckError(AudioFileGetPropertyInfo(audioFile,
                                       kAudioFilePropertyInfoDictionary,
