@@ -10,6 +10,6 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-void GetMaximumPacketSize(AudioFileID inAudioFileID, const char *message, UInt32 *outPacketSize);
+void GetMaximumPacketSize(AudioFileID iAudioFileID, const char *iMessage, UInt32 *oPacketSize);
 
 #endif /* GetMaximumPacketSize_h */

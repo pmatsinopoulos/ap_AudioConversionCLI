@@ -14,6 +14,7 @@
 #import "GetEncodingMagicCookie.h"
 #import "GetMaximumPacketSize.h"
 #import "GetNumberOfPackets.h"
+#import "InitializeOutputAudioFile.h"
 #import "NSPrint.h"
 #import "OpenAudioFile.h"
 #import "PrintFileAudioInformation.h"
@@ -60,15 +61,6 @@ void SetUpAudioDataSettingsForOutputFile (AudioConverterSettings *outAudioConver
   }
     
   return;
-}
-
-void InitializeOutputAudioFile (AudioConverterSettings *audioConverterSettings) {
-  CheckError(AudioFileCreateWithURL((__bridge CFURLRef) CharPointerFilenameToNSURLp(OUTPUT_FILE_NAME),
-                                    OUTPUT_FILE_TYPE,
-                                    &audioConverterSettings->outputFormat,
-                                    kAudioFileFlags_EraseFile,
-                                    &audioConverterSettings->outputFile),
-             "Creating the output audio file with URL");
 }
 
 UInt32 CalculateOutputBufferSize(AudioConverterRef audioConverter,
@@ -317,8 +309,8 @@ int main(int argc, const char * argv[]) {
     
     // The bigger the number of packets to read the less the number of calls to +AudioConverterCallback+ function
     audioConverterSettings.inputMinimumNumberOfPacketsToRead = atoi(argv[2]);
-        
-    InitializeOutputAudioFile(&audioConverterSettings);
+    
+    InitializeOutputAudioFile(audioConverterSettings.outputFormat, OUTPUT_FILE_NAME, OUTPUT_FILE_TYPE, "Initializing Output Audio File", &audioConverterSettings.outputFile);
     
     // The bigger the number of packets, the less the number of calls to AudioConverterFillComplexBuffer() and program runs faster.
     // However, the number of calls to AudioConverterCallback callback is not affected by this number.

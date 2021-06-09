@@ -25,6 +25,7 @@
 		E5E240A6266F594D00F74502 /* GetNumberOfPackets.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E240A5266F594C00F74502 /* GetNumberOfPackets.m */; };
 		E5E240AB266F5B7600F74502 /* GetMaximumPacketSize.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E240AA266F5B7600F74502 /* GetMaximumPacketSize.m */; };
 		E5E240B0266F9FB600F74502 /* PrintAudioStreamBasicDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E240AF266F9FB500F74502 /* PrintAudioStreamBasicDescription.m */; };
+		E5E240C32670811B00F74502 /* InitializeOutputAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E5E240C22670811B00F74502 /* InitializeOutputAudioFile.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,6 +78,8 @@
 		E5E240AD266F5BE900F74502 /* GetMaximumPacketSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GetMaximumPacketSize.h; sourceTree = "<group>"; };
 		E5E240AF266F9FB500F74502 /* PrintAudioStreamBasicDescription.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintAudioStreamBasicDescription.m; sourceTree = "<group>"; };
 		E5E240B2266FA03F00F74502 /* PrintAudioStreamBasicDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrintAudioStreamBasicDescription.h; sourceTree = "<group>"; };
+		E5E240C22670811B00F74502 /* InitializeOutputAudioFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InitializeOutputAudioFile.m; sourceTree = "<group>"; };
+		E5E240C52670841100F74502 /* InitializeOutputAudioFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InitializeOutputAudioFile.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,8 @@
 				E5E240A8266F597C00F74502 /* GetNumberOfPackets.h */,
 				E5E240AA266F5B7600F74502 /* GetMaximumPacketSize.m */,
 				E5E240AD266F5BE900F74502 /* GetMaximumPacketSize.h */,
+				E5E240C22670811B00F74502 /* InitializeOutputAudioFile.m */,
+				E5E240C52670841100F74502 /* InitializeOutputAudioFile.h */,
 			);
 			path = AudioUtils;
 			sourceTree = "<group>";
@@ -236,6 +241,7 @@
 				E5E24058266241F700F74502 /* CheckError.m in Sources */,
 				E5E2406426649EF500F74502 /* CharPointerFilenameToNSURLp.m in Sources */,
 				E5E2405E266245A900F74502 /* OpenAudioFile.m in Sources */,
+				E5E240C32670811B00F74502 /* InitializeOutputAudioFile.m in Sources */,
 				E5E2407A266C91F300F74502 /* PrintMagicCookieEncodingInformation.m in Sources */,
 				E5E24088266DD74300F74502 /* AskUserForOutputFormat.m in Sources */,
 				E5E24098266F23F200F74502 /* PrintOutputFileAudioInformation.m in Sources */,

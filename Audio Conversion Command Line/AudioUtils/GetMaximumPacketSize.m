@@ -10,18 +10,18 @@
 
 #import "CheckError.h"
 
-void GetMaximumPacketSize(AudioFileID inAudioFileID, const char *message, UInt32 *outPacketSize) {
+void GetMaximumPacketSize(AudioFileID iAudioFileID, const char *iMessage, UInt32 *oPacketSize) {
   UInt32 isWriteable = 0;
   UInt32 propertyValueSize = sizeof(UInt32);
-  CheckError(AudioFileGetPropertyInfo(inAudioFileID,
+  CheckError(AudioFileGetPropertyInfo(iAudioFileID,
                                       kAudioFilePropertyMaximumPacketSize,
                                       &propertyValueSize,
                                       &isWriteable),
-             message);
+             iMessage);
   
-  CheckError(AudioFileGetProperty(inAudioFileID,
+  CheckError(AudioFileGetProperty(iAudioFileID,
                                   kAudioFilePropertyMaximumPacketSize,
                                   &propertyValueSize,
-                                  outPacketSize),
+                                  oPacketSize),
              "Getting the packet size");
 }

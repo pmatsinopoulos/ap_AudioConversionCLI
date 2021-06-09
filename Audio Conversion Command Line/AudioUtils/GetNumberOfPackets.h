@@ -9,6 +9,6 @@
 #define GetNumberOfPackets_h
 #import <AudioToolbox/AudioFile.h>
 
-void GetNumberOfPackets(AudioFileID inAudioFileID, const char *message, UInt64 *outPacketCount);
+void GetNumberOfPackets(AudioFileID iAudioFileID, const char *iMessage, UInt64 *oPacketCount);
   
 #endif /* GetNumberOfPackets_h */

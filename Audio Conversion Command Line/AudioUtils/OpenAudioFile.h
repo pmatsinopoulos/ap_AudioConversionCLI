@@ -10,6 +10,6 @@
 
 #import <AudioToolbox/AudioFile.h>
 
-void OpenAudioFile(const char *fileName, AudioFileID *audioFile);
+void OpenAudioFile(const char *iFileName, AudioFileID *oAudioFileID);
 
 #endif /* OpenAudioFile_h */

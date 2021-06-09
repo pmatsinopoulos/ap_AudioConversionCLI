@@ -11,6 +11,6 @@
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
-void GetAudioFilePropertyInfoDictionary(AudioFileID audioFile, CFDictionaryRef *dictionary);
+void GetAudioFilePropertyInfoDictionary(AudioFileID iAudioFileID, CFDictionaryRef *oDictionary);
 
 #endif /* GetAudioFilePropertyInfoDictionary_h */

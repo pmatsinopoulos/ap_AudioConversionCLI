@@ -9,18 +9,18 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "CheckError.h"
 
-void GetAudioFilePropertyInfoDictionary(AudioFileID audioFile, CFDictionaryRef *dictionary) {
+void GetAudioFilePropertyInfoDictionary(AudioFileID iAudioFileID, CFDictionaryRef *oDictionary) {
   UInt32 dictionarySize = 0;
-  CheckError(AudioFileGetPropertyInfo(audioFile,
+  CheckError(AudioFileGetPropertyInfo(iAudioFileID,
                                       kAudioFilePropertyInfoDictionary,
                                       &dictionarySize,
                                       0),
              "Getting the information about the value of the audio file property InfoDictionary");
   
-  CheckError(AudioFileGetProperty(audioFile,
+  CheckError(AudioFileGetProperty(iAudioFileID,
                                   kAudioFilePropertyInfoDictionary,
                                   &dictionarySize,
-                                  dictionary),
+                                  oDictionary),
              "Getting the value of the audio file property InfoDictionary");
 }
 
