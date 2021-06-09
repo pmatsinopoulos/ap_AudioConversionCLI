@@ -7,16 +7,17 @@
 
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
-#import "NSPrint.h"
+
 #import "AudioConverterSettings.h"
-#import "CheckError.h"
 #import "CharPointerFilenameToNSURLp.h"
+#import "CheckError.h"
 #import "GetEncodingMagicCookie.h"
-#import "AskUserForAudioFormat.h"
-#import "PrintOutputFileAudioInformation.h"
-#import "PrintFileAudioInformation.h"
+#import "GetMaximumPacketSize.h"
 #import "GetNumberOfPackets.h"
+#import "NSPrint.h"
 #import "OpenAudioFile.h"
+#import "PrintFileAudioInformation.h"
+#import "PrintOutputFileAudioInformation.h"
 
 #define OUTPUT_FILE_NAME "output.caf"
 #define OUTPUT_FILE_TYPE kAudioFileCAFType
@@ -33,24 +34,13 @@ void GetInputAudioFormatAndPacketsInfo (AudioConverterSettings *audioConverterSe
   
   //  NSPrint(@"Number of input file audio data packet count %d\n", audioConverterSettings->inputFilePacketCount);
   
-  propertyValueSize = sizeof(UInt32);
-  UInt32 isWriteable = 0;
-  CheckError(AudioFileGetPropertyInfo(audioConverterSettings->inputFile,
-                                      kAudioFilePropertyMaximumPacketSize,
-                                      &propertyValueSize,
-                                      &isWriteable),
-             "Getting the input file maximum packet size property value size");
-  
-  CheckError(AudioFileGetProperty(audioConverterSettings->inputFile,
-                                  kAudioFilePropertyMaximumPacketSize,
-                                  &propertyValueSize,
-                                  &audioConverterSettings->inputFilePacketMaxSize),
-             "Getting the input file maximum packet size");
+  GetMaximumPacketSize(audioConverterSettings->inputFile, "Getting the input file maximum packet size property value size", &audioConverterSettings->inputFilePacketMaxSize);
+
   //  NSPrint(@"Input file maximum packet size %d\n", audioConverterSettings->inputFilePacketMaxSize);
 }
 
 void SetUpAudioDataSettingsForOutputFile (AudioConverterSettings *outAudioConverterSettings) {
-  outAudioConverterSettings->outputFormat.mFormatID = AskUserForOutputFormat();
+  outAudioConverterSettings->outputFormat.mFormatID = kAudioFormatLinearPCM;
   outAudioConverterSettings->outputFormat.mSampleRate = outAudioConverterSettings->inputFormat.mSampleRate;
   outAudioConverterSettings->outputFormat.mChannelsPerFrame = outAudioConverterSettings->inputFormat.mChannelsPerFrame;
   
