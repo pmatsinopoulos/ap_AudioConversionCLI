@@ -218,14 +218,12 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   convertedData.mBuffers[0].mDataByteSize = outputBufferSize;
   convertedData.mBuffers[0].mData = (UInt8 *)malloc(sizeof(UInt8) * outputBufferSize);
   
-  AudioStreamPacketDescription *outputFilePacketDescriptions = (AudioStreamPacketDescription *)malloc(sizeof(AudioStreamPacketDescription) * audioConverterSettings->outputBufferSizeInPackets);
-  
   audioConverterSettings->callsToCallback = 0;
   UInt32 numberOfLoops = 0;
-  
+
   while (true) {
     numberOfLoops++;
-    
+  
     UInt32 ioOutputDataPackets = audioConverterSettings->outputBufferSizeInPackets;
     
     //    NSPrint(@"Convert(): About to call AudioConverterFillComplexBuffer()...\n");
@@ -235,7 +233,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
                                                      audioConverterSettings,
                                                      &ioOutputDataPackets,
                                                      &convertedData,
-                                                     outputFilePacketDescriptions);
+                                                     NULL);
     //    NSPrint(@"Convert(): error = %d, number of packets of converted data created: %d\n", error, ioOutputDataPackets);
     
     if (error || !ioOutputDataPackets) {
@@ -246,7 +244,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
     CheckError(AudioFileWritePackets(audioConverterSettings->outputFile,
                                      FALSE,
                                      ioOutputDataPackets * audioConverterSettings->outputFormat.mBytesPerPacket,
-                                     outputFilePacketDescriptions ? outputFilePacketDescriptions : NULL,
+                                     NULL,
                                      outputFilePacketPosition,
                                      &ioOutputDataPackets,
                                      convertedData.mBuffers[0].mData),
@@ -254,11 +252,9 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
     outputFilePacketPosition += ioOutputDataPackets;
     
     memset(convertedData.mBuffers[0].mData, 0, outputBufferSize);
+    
   }
-  
-  free(outputFilePacketDescriptions);
-  outputFilePacketDescriptions = NULL;
-  
+
   free(convertedData.mBuffers[0].mData);
   convertedData.mBuffers[0].mData = NULL;
   
@@ -295,6 +291,8 @@ int main(int argc, const char * argv[]) {
     
     SetUpAudioDataSettingsForOutputFile(&audioConverterSettings);
     
+    InitializeOutputAudioFile(audioConverterSettings.outputFormat, OUTPUT_FILE_NAME, OUTPUT_FILE_TYPE, "Initializing Output Audio File", &audioConverterSettings.outputFile);
+    
     NSPrint(@"---- Output File Info BEFORE conversion ---\n");
     
     PrintOutputFileAudioInformation(audioConverterSettings.outputFormat);
@@ -310,10 +308,8 @@ int main(int argc, const char * argv[]) {
     // The bigger the number of packets to read the less the number of calls to +AudioConverterCallback+ function
     audioConverterSettings.inputMinimumNumberOfPacketsToRead = atoi(argv[2]);
     
-    InitializeOutputAudioFile(audioConverterSettings.outputFormat, OUTPUT_FILE_NAME, OUTPUT_FILE_TYPE, "Initializing Output Audio File", &audioConverterSettings.outputFile);
-    
-    // The bigger the number of packets, the less the number of calls to AudioConverterFillComplexBuffer() and program runs faster.
-    // However, the number of calls to AudioConverterCallback callback is not affected by this number.
+    // The bigger the number of packets, the less the number of calls to +AudioConverterFillComplexBuffer()+ and program runs faster.
+    // However, the number of calls to +AudioConverterCallback+ callback is not affected by this number.
     audioConverterSettings.outputBufferSizeInPackets = atoi(argv[3]);
     
     Convert(&audioConverterSettings);
