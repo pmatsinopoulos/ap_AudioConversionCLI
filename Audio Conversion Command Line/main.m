@@ -48,9 +48,9 @@ void SetUpAudioDataSettingsForOutputFile (AudioConverterSettings *outAudioConver
   if (outAudioConverterSettings->outputFormat.mFormatID == kAudioFormatLinearPCM) {
     // if the output format is PCM create a 16-bit int PCM file format description as an example
     outAudioConverterSettings->outputFormat.mBitsPerChannel = 16;
-    outAudioConverterSettings->outputFormat.mBytesPerPacket = outAudioConverterSettings->outputFormat.mBitsPerChannel / 8 * outAudioConverterSettings->outputFormat.mChannelsPerFrame;
-    outAudioConverterSettings->outputFormat.mBytesPerFrame = outAudioConverterSettings->outputFormat.mBytesPerPacket;
+    outAudioConverterSettings->outputFormat.mBytesPerFrame = outAudioConverterSettings->outputFormat.mBitsPerChannel / 8 * outAudioConverterSettings->outputFormat.mChannelsPerFrame;
     outAudioConverterSettings->outputFormat.mFramesPerPacket = 1;
+    outAudioConverterSettings->outputFormat.mBytesPerPacket = outAudioConverterSettings->outputFormat.mBytesPerFrame * outAudioConverterSettings->outputFormat.mFramesPerPacket;
     outAudioConverterSettings->outputFormat.mFormatFlags = kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
   } else {
     NSException* exception = [NSException
