@@ -210,8 +210,6 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   outputBufferSize = CalculateOutputBufferSize(audioConverter,
                                                audioConverterSettings->outputBufferSizeInPackets);
   
-  UInt32 outputFilePacketPosition = 0;
-  
   AudioBufferList convertedData;
   convertedData.mNumberBuffers = 1;
   convertedData.mBuffers[0].mNumberChannels = audioConverterSettings->inputFormat.mChannelsPerFrame;
@@ -220,6 +218,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
   
   audioConverterSettings->callsToCallback = 0;
   UInt32 numberOfLoops = 0;
+  UInt32 outputFilePacketPosition = 0;
 
   while (true) {
     numberOfLoops++;
