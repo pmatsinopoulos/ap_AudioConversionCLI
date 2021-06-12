@@ -139,6 +139,7 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
     ioData->mBuffers[0].mData = NULL;
   }
   
+  ioData->mBuffers[0].c = inputBufferSize;
   ioData->mBuffers[0].mData = malloc(inputBufferSize);
   memset(ioData->mBuffers[0].mData, 0, inputBufferSize);
   
@@ -172,7 +173,6 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
   
   audioConverterSettings->inputFilePacketIndex += *ioNumberDataPackets;
   
-  ioData->mBuffers[0].mDataByteSize = inputBufferSize;
   if (oDataPacketDescription) {
     *oDataPacketDescription = audioConverterSettings->inputFilePacketDescriptions;
   }
