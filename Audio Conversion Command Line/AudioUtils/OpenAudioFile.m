@@ -10,10 +10,10 @@
 #import "CheckError.h"
 #import "CharPointerFilenameToNSURLp.h"
 
-void OpenAudioFile(const char *iFileName, AudioFileID *iAudioFileID) {
+void OpenAudioFile(const char *iFileName, AudioFileID *oAudioFileID) {
   CheckError(AudioFileOpenURL((__bridge CFURLRef) CharPointerFilenameToNSURLp(iFileName),
                               kAudioFileReadPermission,
                               0,
-                              iAudioFileID),
+                              oAudioFileID),
              "Opening the audio file");
 }
