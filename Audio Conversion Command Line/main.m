@@ -139,7 +139,7 @@ OSStatus AudioConverterCallback (AudioConverterRef inAudioConverter,
     ioData->mBuffers[0].mData = NULL;
   }
   
-  ioData->mBuffers[0].c = inputBufferSize;
+  ioData->mBuffers[0].mDataByteSize = inputBufferSize;
   ioData->mBuffers[0].mData = malloc(inputBufferSize);
   memset(ioData->mBuffers[0].mData, 0, inputBufferSize);
   
@@ -248,7 +248,9 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
                                      &ioOutputDataPackets,
                                      convertedData.mBuffers[0].mData),
                "Writing packets to output file");
+    NSPrint(@"Just wrote %d packets\n", ioOutputDataPackets);
     outputFilePacketPosition += ioOutputDataPackets;
+    NSPrint(@"outputFilePacketPosition %ld\n", outputFilePacketPosition);
     
     memset(convertedData.mBuffers[0].mData, 0, outputBufferSize);
     
