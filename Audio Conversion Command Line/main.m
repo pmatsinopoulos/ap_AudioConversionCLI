@@ -267,7 +267,7 @@ void Convert (AudioConverterSettings *audioConverterSettings) {
 int main(int argc, const char * argv[]) {
   @autoreleasepool {
     if (argc < 4) {
-      NSLog(@"1st arguments: You need to give the input file for converting. You can use any Core Audio supported file such as .mp3, .aac, .m4a, .wav, .aif e.t.c.\n");
+      NSLog(@"1st argument: You need to give the input file for converting. You can use any Core Audio supported file such as .mp3, .aac, .m4a, .wav, .aif e.t.c.\n");
       NSLog(@"2nd argument: You need to give the minimum number of packets to read from the input file.\n");
       NSLog(@"3rd argument: You need to give the size of the conversion output buffer in number of packets.\n");
       NSLog(@"Example: audio_conversion trixtor.mp3 10000 10000\n");
